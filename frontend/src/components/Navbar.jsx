@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, X } from 'lucide-react'; // Optional: you can use any icon lib
+import { useCart } from '../context/CartContext';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { cartItems } = useCart();
 
   return (
     <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -24,7 +26,14 @@ const Navbar = () => {
         <div className="hidden md:flex space-x-6 text-gray-700 font-medium">
           <Link to="/" className="hover:text-purple-600">Home</Link>
           <Link to="/products" className="hover:text-purple-600">Products</Link>
-          <Link to="/cart" className="hover:text-purple-600">Cart</Link>
+          <Link to="/cart" className="relative text-lg font-medium text-gray-700 hover:text-blue-600">
+        🛒 Cart
+        {cartItems.length > 0 && (
+          <span className="absolute -top-2 -right-3 bg-red-600 text-white rounded-full text-xs px-2">
+            {cartItems.length}
+          </span>
+        )}
+      </Link>
           <Link to="/login" className="hover:text-purple-600">Login</Link>
         </div>
 

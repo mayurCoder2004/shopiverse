@@ -9,9 +9,17 @@ const priceRanges = [
   { label: '₹5,000 – ₹10,000', min: 5000, max: 10000 },
 ];
 
+const sortOptions = [
+  { label: 'Sort By', value: '' },
+  { label: 'Price: Low to High', value: 'price-asc' },
+  { label: 'Price: High to Low', value: 'price-desc' },
+  { label: 'Newest', value: 'newest' },
+];
+
 const ProductListingPage = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedPrices, setSelectedPrices] = useState([]);
+  const [sortOrder, setSortOrder] = useState('');
 
   const handleCategoryChange = (category) => {
     setSelectedCategories((prev) =>
@@ -21,29 +29,38 @@ const ProductListingPage = () => {
     );
   };
 
-  const handlePriceChange = (range) => {
+  const handlePriceChange = (rangeLabel) => {
     setSelectedPrices((prev) =>
-      prev.includes(range)
-        ? prev.filter((r) => r !== range)
-        : [...prev, range]
+      prev.includes(rangeLabel)
+        ? prev.filter((r) => r !== rangeLabel)
+        : [...prev, rangeLabel]
     );
   };
 
-  const filteredProducts = products.filter((product) => {
-    const categoryMatch =
-      selectedCategories.length === 0 || selectedCategories.includes(product.category);
+  const handleSortChange = (e) => {
+    setSortOrder(e.target.value);
+  };
 
-    const priceMatch =
-      selectedPrices.length === 0 ||
-      selectedPrices.some(
-        (rangeLabel) => {
-          const range = priceRanges.find((r) => r.label === rangeLabel);
-          return product.price >= range.min && product.price <= range.max;
-        }
-      );
+  const filteredProducts = products
+    .filter((product) => {
+      const categoryMatch =
+        selectedCategories.length === 0 || selectedCategories.includes(product.category);
 
-    return categoryMatch && priceMatch;
-  });
+      const priceMatch =
+        selectedPrices.length === 0 ||
+        selectedPrices.some((label) => {
+          const range = priceRanges.find((r) => r.label === label);
+          return range && product.price >= range.min && product.price <= range.max;
+        });
+
+      return categoryMatch && priceMatch;
+    })
+    .sort((a, b) => {
+      if (sortOrder === 'price-asc') return a.price - b.price;
+      if (sortOrder === 'price-desc') return b.price - a.price;
+      if (sortOrder === 'newest') return b.id - a.id; // Assuming higher ID is newer
+      return 0;
+    });
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
@@ -51,7 +68,8 @@ const ProductListingPage = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {/* Sidebar Filters */}
-        <aside className="md:col-span-1 space-y-6">
+        <aside className="md:col-span-1 space-y-6 sticky top-24 self-start bg-white rounded-lg shadow p-4 h-fit">
+          {/* Categories */}
           <div>
             <h3 className="font-semibold text-lg mb-2">Categories</h3>
             <ul className="space-y-2 text-gray-700">
@@ -71,6 +89,7 @@ const ProductListingPage = () => {
             </ul>
           </div>
 
+          {/* Price Ranges */}
           <div>
             <h3 className="font-semibold text-lg mb-2">Price</h3>
             <ul className="space-y-2 text-gray-700">
@@ -92,14 +111,19 @@ const ProductListingPage = () => {
         </aside>
 
         {/* Main Product Grid */}
-        <main className="md:col-span-3 space-y-4">
-          {/* Sort (optional, unchanged) */}
+        <main className="md:col-span-3">
+          {/* Sort Dropdown */}
           <div className="flex justify-end mb-4">
-            <select className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500">
-              <option>Sort By</option>
-              <option>Price: Low to High</option>
-              <option>Price: High to Low</option>
-              <option>Newest</option>
+            <select
+              value={sortOrder}
+              onChange={handleSortChange}
+              className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            >
+              {sortOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -110,7 +134,7 @@ const ProductListingPage = () => {
                 <ProductCard key={product.id} product={product} />
               ))
             ) : (
-              <p className="text-gray-500">No products found.</p>
+              <p className="text-gray-500 text-center col-span-full">No products found.</p>
             )}
           </div>
         </main>
