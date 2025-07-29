@@ -11,16 +11,23 @@ import Profile from "./pages/Profile";
 import Orders from "./pages/Orders";
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import { Toaster } from "react-hot-toast";
+import PrivateRoute from './components/PrivateRoute';
 
 const App = () => {
   return (
     <>
     <Navbar />
+    <Toaster position="top-center" reverseOrder={false} />
     <Routes>
       <Route path='/' element={<Home />} />
       <Route path="/products" element={<ProductListing />} />
       <Route path="/product/:id" element={<ProductDetails />} />
-      <Route path="/cart" element={<Cart />} />
+      <Route path="/cart" element={
+        <PrivateRoute>
+          <Cart />
+        </PrivateRoute>
+      } />
       <Route path="/checkout" element={<Checkout />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
