@@ -1,13 +1,19 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import { useAuth } from '../context/AuthContext'; 
+import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { cartItems } = useCart();
-  const { user, logout } = useAuth(); // ✅ access auth
+  const { user, logout } = useAuth();
+  const location = useLocation(); // helps trigger updates on route change
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location.pathname]);
 
   return (
     <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -39,7 +45,8 @@ const Navbar = () => {
 
           {user ? (
             <>
-              <span className="text-sm text-gray-600">Hi, {user.name}</span>
+              <Link to="/profile" className="hover:text-purple-600">Profile</Link>
+              <span className="text-sm text-gray-600">Hi, {user.name.split(" ")[0]}</span>
               <button
                 onClick={logout}
                 className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
@@ -75,12 +82,10 @@ const Navbar = () => {
 
           {user ? (
             <>
-              <div className="text-sm text-gray-600">Hi, {user.name}</div>
+              <Link to="/profile" className="block hover:text-purple-600">Profile</Link>
+              <div className="text-sm text-gray-600">Hi, {user.name.split(" ")[0]}</div>
               <button
-                onClick={() => {
-                  logout();
-                  setIsOpen(false);
-                }}
+                onClick={logout}
                 className="block w-full text-left text-red-600 hover:underline"
               >
                 Logout
