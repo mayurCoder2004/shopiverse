@@ -1,21 +1,24 @@
-import React, { useEffect, useState } from "react";
+// imports remain the same
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import { FaUserCircle } from "react-icons/fa";
 
 const Profile = () => {
   const [user, setUser] = useState(null);
+  const { logout } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("token");
-
         const { data } = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/users/profile`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-
         setUser(data);
       } catch (error) {
         console.error("Error fetching profile", error);
@@ -24,6 +27,11 @@ const Profile = () => {
 
     fetchProfile();
   }, []);
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   if (!user) return <div className="flex justify-center items-center h-screen text-gray-500">Loading...</div>;
 
@@ -41,12 +49,15 @@ const Profile = () => {
           <span className="font-medium text-gray-700">Email:</span> {user.email}
         </p>
 
-        <div className="mt-6">
+        <div className="mt-6 flex flex-col gap-3">
           <button
-            onClick={() => {
-              localStorage.removeItem("token");
-              window.location.href = "/login";
-            }}
+            onClick={() => navigate("/edit-profile")}
+            className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition duration-300"
+          >
+            Edit Profile
+          </button>
+          <button
+            onClick={handleLogout}
             className="px-4 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition duration-300"
           >
             Logout
