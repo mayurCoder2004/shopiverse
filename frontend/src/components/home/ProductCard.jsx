@@ -5,7 +5,7 @@ import { useCart } from "../../context/CartContext";
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
   return (
-    <Link to={`/product/${product.id}`} className="w-full max-w-xs">
+    <Link to={`/product/${product._id}`} className="w-full max-w-xs">
       <div className="bg-white rounded-2xl shadow-md hover:shadow-lg transition-all p-4 flex flex-col items-center text-center">
         <div className="w-full aspect-[4/3] mb-4 overflow-hidden rounded-lg">
           <img
