@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useSearch } from '../context/SearchContext';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,6 +16,14 @@ const Navbar = () => {
     setIsOpen(false);
   }, [location.pathname]);
 
+  const { query, setQuery } = useSearch();
+
+  const handleSearch = (e) => {
+    if (e.key === "Enter" && query.trim()) {
+      navigate(`/products?search=${query}`);
+    }
+  };
+
   return (
     <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
@@ -24,11 +33,15 @@ const Navbar = () => {
         </Link>
 
         {/* Search Input */}
-        <input
+        {/* <input
           type="text"
           placeholder="Search for products..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={handleSearch}
           className="hidden md:flex flex-1 max-w-md mx-6 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-        />
+        /> */}
+
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex space-x-6 text-gray-700 font-medium items-center">
@@ -71,11 +84,15 @@ const Navbar = () => {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden px-4 pb-4 space-y-2 text-gray-700 font-medium">
-          <input
+          {/* <input
             type="text"
             placeholder="Search for products..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={handleSearch}
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-          />
+          /> */}
+
           <Link to="/" className="block hover:text-purple-600">Home</Link>
           <Link to="/products" className="block hover:text-purple-600">Products</Link>
           <Link to="/cart" className="block hover:text-purple-600">Cart</Link>

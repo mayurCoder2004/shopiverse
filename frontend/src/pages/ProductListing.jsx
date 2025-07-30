@@ -20,29 +20,29 @@ const ProductListingPage = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedPrices, setSelectedPrices] = useState([]);
   const [sortOrder, setSortOrder] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
 
   const handleCategoryChange = (category) => {
     setSelectedCategories((prev) =>
-      prev.includes(category)
-        ? prev.filter((c) => c !== category)
-        : [...prev, category]
+      prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]
     );
   };
 
   const handlePriceChange = (rangeLabel) => {
     setSelectedPrices((prev) =>
-      prev.includes(rangeLabel)
-        ? prev.filter((r) => r !== rangeLabel)
-        : [...prev, rangeLabel]
+      prev.includes(rangeLabel) ? prev.filter((r) => r !== rangeLabel) : [...prev, rangeLabel]
     );
   };
 
-  const handleSortChange = (e) => {
-    setSortOrder(e.target.value);
-  };
+  const handleSortChange = (e) => setSortOrder(e.target.value);
+
+  const handleSearchChange = (e) => setSearchTerm(e.target.value);
 
   const filteredProducts = products
     .filter((product) => {
+      const matchesSearch =
+        product.title.toLowerCase().includes(searchTerm.toLowerCase());
+
       const categoryMatch =
         selectedCategories.length === 0 || selectedCategories.includes(product.category);
 
@@ -53,12 +53,12 @@ const ProductListingPage = () => {
           return range && product.price >= range.min && product.price <= range.max;
         });
 
-      return categoryMatch && priceMatch;
+      return matchesSearch && categoryMatch && priceMatch;
     })
     .sort((a, b) => {
       if (sortOrder === 'price-asc') return a.price - b.price;
       if (sortOrder === 'price-desc') return b.price - a.price;
-      if (sortOrder === 'newest') return b.id - a.id; // Assuming higher ID is newer
+      if (sortOrder === 'newest') return b.id - a.id;
       return 0;
     });
 
@@ -66,10 +66,20 @@ const ProductListingPage = () => {
     <div className="max-w-7xl mx-auto px-4 py-6">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">All Products</h1>
 
+      {/* Search bar */}
+      <div className="mb-6">
+        <input
+          type="text"
+          placeholder="Search products..."
+          value={searchTerm}
+          onChange={handleSearchChange}
+          className="w-full md:w-1/2 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+        />
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        {/* Sidebar Filters */}
+        {/* Filters */}
         <aside className="md:col-span-1 space-y-6 sticky top-24 self-start bg-white rounded-lg shadow p-4 h-fit">
-          {/* Categories */}
           <div>
             <h3 className="font-semibold text-lg mb-2">Categories</h3>
             <ul className="space-y-2 text-gray-700">
@@ -89,7 +99,6 @@ const ProductListingPage = () => {
             </ul>
           </div>
 
-          {/* Price Ranges */}
           <div>
             <h3 className="font-semibold text-lg mb-2">Price</h3>
             <ul className="space-y-2 text-gray-700">
@@ -110,9 +119,8 @@ const ProductListingPage = () => {
           </div>
         </aside>
 
-        {/* Main Product Grid */}
+        {/* Product Grid */}
         <main className="md:col-span-3">
-          {/* Sort Dropdown */}
           <div className="flex justify-end mb-4">
             <select
               value={sortOrder}
@@ -127,7 +135,6 @@ const ProductListingPage = () => {
             </select>
           </div>
 
-          {/* Product Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredProducts.length > 0 ? (
               filteredProducts.map((product) => (
