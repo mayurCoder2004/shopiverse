@@ -16,6 +16,7 @@ import PrivateRoute from './components/PrivateRoute';
 import EditProfile from './pages/EditProfile';
 import Payment from './pages/Payment';
 import OrderConfirmation from './pages/OrderConfirmation';
+import MyOrders from './pages/MyOrders';
 
 const App = () => {
   return (
@@ -40,6 +41,7 @@ const App = () => {
       <Route path="*" element={<h1>404 - Not Found</h1>} />
       <Route path="/payment" element={<Payment />} />
       <Route path="/order-confirmation/:id" element={<OrderConfirmation />} />
+      <Route path="/my-orders" element={<MyOrders />} />
     </Routes>
     <Footer />
     </>

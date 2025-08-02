@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
@@ -9,7 +9,8 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { cartItems } = useCart();
   const { user, logout } = useAuth();
-  const location = useLocation(); // helps trigger updates on route change
+  const location = useLocation();
+  const navigate = useNavigate();
 
   // Close mobile menu on route change
   useEffect(() => {
@@ -32,17 +33,6 @@ const Navbar = () => {
           ShopiVerse
         </Link>
 
-        {/* Search Input */}
-        {/* <input
-          type="text"
-          placeholder="Search for products..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={handleSearch}
-          className="hidden md:flex flex-1 max-w-md mx-6 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-        /> */}
-
-
         {/* Desktop Navigation */}
         <div className="hidden md:flex space-x-6 text-gray-700 font-medium items-center">
           <Link to="/" className="hover:text-purple-600">Home</Link>
@@ -58,6 +48,7 @@ const Navbar = () => {
 
           {user ? (
             <>
+              <Link to="/my-orders" className="hover:text-purple-600">My Orders</Link>
               <Link to="/profile" className="hover:text-purple-600">Profile</Link>
               <span className="text-sm text-gray-600">Hi, {user.name.split(" ")[0]}</span>
               <button
@@ -84,21 +75,13 @@ const Navbar = () => {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden px-4 pb-4 space-y-2 text-gray-700 font-medium">
-          {/* <input
-            type="text"
-            placeholder="Search for products..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={handleSearch}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-          /> */}
-
           <Link to="/" className="block hover:text-purple-600">Home</Link>
           <Link to="/products" className="block hover:text-purple-600">Products</Link>
           <Link to="/cart" className="block hover:text-purple-600">Cart</Link>
 
           {user ? (
             <>
+              <Link to="/my-orders" className="block hover:text-purple-600">My Orders</Link>
               <Link to="/profile" className="block hover:text-purple-600">Profile</Link>
               <div className="text-sm text-gray-600">Hi, {user.name.split(" ")[0]}</div>
               <button

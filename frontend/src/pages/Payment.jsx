@@ -67,6 +67,8 @@ const CheckoutForm = ({ amount, cartItems, shippingDetails }) => {
             shippingAddress: shippingDetails,
             paymentMethod: "Card",
             totalPrice: amount / 100,
+            isPaid: true, // ✅ add this
+            paidAt: new Date().toISOString(), // ✅ optional but recommended
           },
           {
             headers: {
