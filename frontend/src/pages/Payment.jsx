@@ -54,25 +54,37 @@ const CheckoutForm = ({ amount, cartItems, shippingDetails }) => {
     } else if (result.paymentIntent.status === "succeeded") {
       alert("✅ Payment successful!");
 
-      const order = {
-        items: cartItems,
-        shippingDetails,
-        amount,
-        paymentId: result.paymentIntent.id,
-        createdAt: new Date().toISOString(),
-      };
+      try {
+        const token = localStorage.getItem("token");
 
-      const existingOrders =
-        JSON.parse(localStorage.getItem("orders")) || [];
-      localStorage.setItem(
-        "orders",
-        JSON.stringify([...existingOrders, order])
-      );
+        const response = await axios.post(
+          `${import.meta.env.VITE_BASE_URL}/api/orders`,
+          {
+            orderItems: cartItems.map((item) => ({
+              product: item._id,
+              quantity: item.quantity,
+            })),
+            shippingAddress: shippingDetails,
+            paymentMethod: "Card",
+            totalPrice: amount / 100,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-      localStorage.removeItem("cart"); // clear cart
-      localStorage.removeItem("shippingInfo"); // optional: clear shipping info
-
-      navigate("/order-confirmation");
+        localStorage.removeItem("cart");
+        localStorage.removeItem("shippingInfo");
+        navigate(`/order-confirmation/${response.data._id}`);
+      } catch (error) {
+        console.error(
+          "❌ Failed to save order:",
+          error.response?.data || error.message
+        );
+        alert("Something went wrong saving the order. Contact support.");
+      }
     }
 
     setProcessing(false);
@@ -105,7 +117,7 @@ const Payment = () => {
     const checkData = () => {
       let shippingInfo = null;
       try {
-        shippingInfo = JSON.parse(localStorage.getItem("shippingInfo"));
+        shippingInfo = JSON.parse(localStorage.getItem("shippingAddress")); // ✅ match key
       } catch (error) {
         console.error("Failed to parse shipping info:", error);
       }
@@ -113,9 +125,10 @@ const Payment = () => {
       const isCartEmpty = cartItems.length === 0;
       const isShippingEmpty =
         !shippingInfo ||
-        !shippingInfo.fullName?.trim() ||
         !shippingInfo.address?.trim() ||
-        !shippingInfo.city?.trim();
+        !shippingInfo.city?.trim() ||
+        !shippingInfo.postalCode?.trim() ||
+        !shippingInfo.country?.trim(); // ✅ check correct fields
 
       if (isCartEmpty) {
         alert("Cart is empty. Please add items.");

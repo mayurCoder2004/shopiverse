@@ -1,11 +1,9 @@
-// pages/Checkout.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Checkout = () => {
   const navigate = useNavigate();
-  const [shipping, setShipping] = useState({
-    fullName: "",
+  const [shippingAddress, setShippingAddress] = useState({
     address: "",
     city: "",
     postalCode: "",
@@ -14,25 +12,36 @@ const Checkout = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    localStorage.setItem("shippingInfo", JSON.stringify(shipping));
+
+    // Save shipping info to localStorage
+    localStorage.setItem("shippingAddress", JSON.stringify(shippingAddress));
+
+    // Navigate to payment
     navigate("/payment");
   };
 
   return (
     <form onSubmit={handleSubmit} className="max-w-xl mx-auto space-y-4 p-4">
       <h2 className="text-2xl font-bold mb-4">Shipping Information</h2>
-      {["fullName", "address", "city", "postalCode", "country"].map((field) => (
+
+      {["address", "city", "postalCode", "country"].map((field) => (
         <input
           key={field}
           type="text"
           required
           placeholder={field}
-          value={shipping[field]}
-          onChange={(e) => setShipping({ ...shipping, [field]: e.target.value })}
+          value={shippingAddress[field]}
+          onChange={(e) =>
+            setShippingAddress({ ...shippingAddress, [field]: e.target.value })
+          }
           className="w-full p-2 border rounded"
         />
       ))}
-      <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
+
+      <button
+        type="submit"
+        className="bg-blue-600 text-white px-4 py-2 rounded"
+      >
         Continue to Payment
       </button>
     </form>

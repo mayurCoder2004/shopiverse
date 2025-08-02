@@ -11,6 +11,7 @@ import router from './routes/authRoutes.js';
 import { updateUserProfile } from './controllers/authController.js';
 import productRoutes from './routes/productRoutes.js';
 import paymentRoutes from "./routes/payment.js";
+import orderRoutes from './routes/orderRoutes.js';
 
 const app = express();
 app.use(cors());
@@ -60,6 +61,7 @@ app.get("/profile", protect, (req, res) => {
 router.put("/profile", protect, updateUserProfile);
 app.use("/api/products", productRoutes);
 app.use("/api", paymentRoutes);
+app.use('/api/orders', orderRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
