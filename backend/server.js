@@ -14,7 +14,10 @@ import paymentRoutes from "./routes/payment.js";
 import orderRoutes from './routes/orderRoutes.js';
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: 'https://shopiverse-nine.vercel.app',
+  credentials: true,
+}));
 app.use(express.json());
 
 connectDB();
