@@ -14,6 +14,7 @@ import Footer from './components/Footer';
 import { Toaster } from "react-hot-toast";
 import PrivateRoute from './components/PrivateRoute';
 import EditProfile from './pages/EditProfile';
+import Payment from './pages/Payment';
 
 const App = () => {
   return (
@@ -36,6 +37,7 @@ const App = () => {
       <Route path="/edit-profile" element={<EditProfile />} />
       <Route path="/orders" element={<Orders />} />
       <Route path="*" element={<h1>404 - Not Found</h1>} />
+      <Route path="/payment" element={<Payment />} />
     </Routes>
     <Footer />
     </>

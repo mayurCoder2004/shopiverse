@@ -46,8 +46,13 @@ export const CartProvider = ({ children }) => {
     dispatch({ type: "REMOVE_FROM_CART", payload: id });
   };
 
+  // ✅ Add this function to calculate total price
+  const getTotalPrice = () => {
+    return state.cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  };
+
   return (
-    <CartContext.Provider value={{ cartItems: state.cartItems, addToCart, removeFromCart }}>
+    <CartContext.Provider value={{ cartItems: state.cartItems, addToCart, removeFromCart, getTotalPrice }}>
       {children}
     </CartContext.Provider>
   );
