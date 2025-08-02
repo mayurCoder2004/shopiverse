@@ -64,7 +64,7 @@ app.use("/api", paymentRoutes);
 app.use('/api/orders', orderRoutes);
 
 app.get('/', (req, res) => {
-  res.send("Backend in working");
+  res.send("Backend is working");
 })
 
 const PORT = process.env.PORT || 5000;
