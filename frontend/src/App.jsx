@@ -8,7 +8,6 @@ import Checkout from "./pages/Checkout";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
-import Orders from "./pages/Orders";
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import { Toaster } from "react-hot-toast";
@@ -37,7 +36,6 @@ const App = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/edit-profile" element={<EditProfile />} />
-      <Route path="/orders" element={<Orders />} />
       <Route path="*" element={<h1>404 - Not Found</h1>} />
       <Route path="/payment" element={<Payment />} />
       <Route path="/order-confirmation/:id" element={<OrderConfirmation />} />
