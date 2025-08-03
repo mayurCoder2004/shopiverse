@@ -25,13 +25,6 @@ A modern, scalable e-commerce platform built with the MERN stack, featuring secu
 - Order confirmation emails
 - Invoice generation
 
-### 👨‍💼 Admin Dashboard
-- Product management (CRUD operations)
-- Order management and fulfillment
-- User management
-- Sales analytics and reports
-- Inventory tracking
-
 ### 📱 User Experience
 - Fully responsive design
 - Progressive Web App (PWA) features
